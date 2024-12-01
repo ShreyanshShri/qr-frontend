@@ -4,6 +4,8 @@ body, html {
     margin: 0;
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: black;
 }
   

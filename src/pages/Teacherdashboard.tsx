@@ -1,12 +1,10 @@
 import React, {useState, useEffect, useRef} from 'react'
 import axios from "axios"
-import io from "socket.io-client";
+import { socket } from '../socket';
 import QRCode from "react-qr-code";
 import { DownloadTableExcel } from 'react-export-table-to-excel'
 
 import StudentTr from '../components/StudentTr';
-
-let socket;
 
 const Teacherdashboard = () => {
 
@@ -17,12 +15,11 @@ const Teacherdashboard = () => {
     const [attendance, setAttendance] = useState<any>([]);
     const [showQR, setShowQR] = useState(false);
     const [timer, setTimer] = useState(0);
-
+    
     const timerId = useRef<any>(null);
     const tableRef = useRef<any>(null);
     
-    socket = io('https://qr-backend-b3pj.onrender.com');
-
+    
     useEffect(() => {
         const getData = async () => {
             try {
@@ -41,8 +38,8 @@ const Teacherdashboard = () => {
             }
         }
         getData();
-
-
+        
+        
         timerId.current = setTimeout(() => {
             setShowQR(true);
         }, 2000);
@@ -50,17 +47,34 @@ const Teacherdashboard = () => {
 
 
 
-        socket.on("token", (_token) => {
+        function onConnect() {
+            console.log("connection established");
+        }
+    
+        function onDisconnect() {
+            console.log("connection ended");
+        }
+
+        function onToken(_token) {
+            console.log(_token);
             if(_token.timer) setTimer(_token.timer);
             setToken(_token.token);
-        })
+        }
+
+        socket.on('connect', onConnect);
+        socket.on('disconnect', onDisconnect);
+        socket.on('token', onToken);
 
         return () => {
             clearTimeout(timerId.current);
-            // socket.disconnect();
+
+            socket.off('connect', onConnect);
+            socket.off('disconnect', onDisconnect);
+            socket.off('token', onToken);
+            // socket.off('start-session');
         };
     }, [])
-
+    
     useEffect(() => {
         const interval = setInterval(() => {
             if(showQR) {
@@ -73,14 +87,12 @@ const Teacherdashboard = () => {
                 });
             }
         }, 1000)
-
-      return () => {
-        clearInterval(interval);
-      }
+        
+        return () => {
+            clearInterval(interval);
+        }
     }, [showQR])
     
-
-
 
     const startConnection = async (__batch, __subject) => {
         socket.emit("start-session", { 
@@ -89,11 +101,16 @@ const Teacherdashboard = () => {
          })
     }
 
+    const leaveRoom = async () => {
+        socket.emit("leave");
+    }
+
 
 
   return (
     <div className="dashboard-container">
     <h1 id="teacher-name">Welcome, <span id="userDisplay">{teacher && teacher.username}</span></h1>
+    <h2>{teacher && teacher.subjects[0]}</h2>
     {token != "" && showQR && <QRCode value={token} />}
     {showQR && <p>Valid For: {timer}s</p>}
     <div className="details">
@@ -103,6 +120,7 @@ const Teacherdashboard = () => {
                 {teacher && teacher.batches.map(b => (
                     <li key={b} className={currBatch == b ? "active" : "inactive"}><button onClick={() => {
                         setCurrBatch(b)
+                        leaveRoom()
                         startConnection(b, teacher.subjects[0])
                     }} className='button-none'>{b}</button></li>
                 ))}

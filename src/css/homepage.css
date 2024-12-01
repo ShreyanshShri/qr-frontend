@@ -82,11 +82,22 @@ header nav a:hover {
     bottom: 0px;
     left: 0px;
     right: 0px; 
-}
-.contact {
     padding: 20px;
 }
+.contact {
+    /* padding: 20px; */
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.contact h3 {
+    margin: 5px;
+}
  
+.contact h6 {
+    margin: 5px;
+}
+
 .features {
     display: flex;
     justify-content: space-around;

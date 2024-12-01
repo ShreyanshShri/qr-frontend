@@ -12,7 +12,7 @@ const Homepage = () => {
                 <a>Home</a>
                 <a>Features</a>
                 <a>Pricing</a>
-                <a href="contact.html">Contact</a>
+                <Link to="/contact">Contact</Link>
             </nav>
         </header>
 
