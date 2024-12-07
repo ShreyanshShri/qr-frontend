@@ -3,7 +3,6 @@ import axios from "axios"
 import { socket } from '../socket';
 import QRCode from "react-qr-code";
 import { DownloadTableExcel } from 'react-export-table-to-excel'
-import { BarChart, CartesianGrid, Tooltip, Legend, XAxis, YAxis, Bar, ResponsiveContainer } from 'recharts';
 
 import StudentTr from '../components/StudentTr';
 
@@ -189,20 +188,6 @@ const Teacherdashboard = () => {
                 </tbody>
             </table>
         </div>
-    </div>
-
-
-    <div className="analytics">
-        <ResponsiveContainer  width="100%" height={250} style={{ backgroundColor: "white", marginTop: "20px" }}>
-        <BarChart data={classAnalyticsData}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis dataKey="attendance" />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="attendance" fill="#8884d8" />
-        </BarChart>
-        </ResponsiveContainer>
     </div>
 </div>
   )
