@@ -3,11 +3,12 @@ import axios from "axios"
 import { socket } from '../socket';
 import QRCode from "react-qr-code";
 import { DownloadTableExcel } from 'react-export-table-to-excel'
+import { BarChart, CartesianGrid, Tooltip, Legend, XAxis, YAxis, Bar, ResponsiveContainer } from 'recharts';
 
 import StudentTr from '../components/StudentTr';
 
 const Teacherdashboard = () => {
-
+    
     const [teacher, setTeacher] = useState<any>(null);
     const [currBatch, setCurrBatch] = useState("")
     const [token, setToken] = useState("");
@@ -15,10 +16,27 @@ const Teacherdashboard = () => {
     const [attendance, setAttendance] = useState<any>([]);
     const [showQR, setShowQR] = useState(false);
     const [timer, setTimer] = useState(0);
-    
+    const [classAnalyticsData, setClassAnalyticsData] = useState<any>([]);
+
+    const updateGraph = (attendance_data, batch) => {
+        const temp : any= []
+        attendance_data.map(at => {
+
+            let s = new Set(at.students);
+            const a1 = [...s];
+
+            const yymmdd = at.date.split("T")[0];
+            const month = yymmdd.split("-")[1];
+            const date = yymmdd.split("-")[2];
+            if(at.batch == batch) {
+                temp.push({date: `${date}-${month}`, attendance: a1.length})
+            }
+        })
+        setClassAnalyticsData(temp)
+    }
+
     const timerId = useRef<any>(null);
     const tableRef = useRef<any>(null);
-    
     
     useEffect(() => {
         const getData = async () => {
@@ -30,8 +48,9 @@ const Teacherdashboard = () => {
                 setStudents(res.data.student_list);
                 setCurrBatch(res.data.user.batches[0]);
                 setAttendance(res.data.attendance_data);
+                updateGraph(res.data.attendance_data, res.data.user.batches[0]);
                 startConnection(res.data.user.batches[0], res.data.user.subjects[0]);
-                console.log(res)
+                // console.log(res)
             } catch (err) {
                 alert(err.message)
                 console.log(err.message);
@@ -122,7 +141,9 @@ const Teacherdashboard = () => {
                         setCurrBatch(b)
                         leaveRoom()
                         startConnection(b, teacher.subjects[0])
-                    }} className='button-none'>{b}</button></li>
+                        updateGraph(attendance, b);
+                    }} className='button-none' 
+                    >{b}</button></li>
                 ))}
             </ul> 
         </div>
@@ -168,6 +189,20 @@ const Teacherdashboard = () => {
                 </tbody>
             </table>
         </div>
+    </div>
+
+
+    <div className="analytics">
+        <ResponsiveContainer  width="100%" height={250} style={{ backgroundColor: "white", marginTop: "20px" }}>
+        <BarChart data={classAnalyticsData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis dataKey="attendance" />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="attendance" fill="#8884d8" />
+        </BarChart>
+        </ResponsiveContainer>
     </div>
 </div>
   )
