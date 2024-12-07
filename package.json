@@ -19,6 +19,7 @@
     "react-qr-code": "^2.0.15",
     "react-router": "^7.0.1",
     "react-router-dom": "^7.0.1",
+    "recharts": "^2.14.1",
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
