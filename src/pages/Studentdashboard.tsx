@@ -30,13 +30,14 @@ const Studentdashboard = () => {
 
           const punchAttendance = async (decodedText) => {
             try {
-                const res = await axios.post("https://qr-backend-b3pj.onrender.com/attendance/punch-in", {
+                const res = await axios.post(import.meta.env.VITE_SERVER_URL+"attendance/punch-in", {
                     user_token: localStorage.getItem("token"),
                     attendance_token: decodedText
                 });
                 console.log(res.data.message)
                 alert(res.data.message)
             } catch (err) {
+                console.log(err.response.data);
                 alert(err.response.data.message);
             }
           }
@@ -45,7 +46,7 @@ const Studentdashboard = () => {
 
     const getData = async() => {
         try {
-            const res = await axios.post("https://qr-backend-b3pj.onrender.com/attendance/get-student-attendance", {
+            const res = await axios.post(import.meta.env.VITE_SERVER_URL+"attendance/get-student-attendance", {
                 user_token: localStorage.getItem("token")
             })
             console.log(res.data);
@@ -53,7 +54,8 @@ const Studentdashboard = () => {
             setSubject(res.data.student[0]);
             setAttendances(res.data.attendances);
         } catch (err) {
-            alert(err.message);
+            console.log(err.response.data);
+            alert(err.response.data.message);
         }
     }
 

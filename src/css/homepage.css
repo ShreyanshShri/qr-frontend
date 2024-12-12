@@ -11,7 +11,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background: linear-gradient(135deg, #000000, #433dfa);
 }
 
 header .logo {
@@ -31,7 +31,7 @@ header nav a:hover {
     color: white;
     border-radius: 8px;
     font-size: 20px;
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background: linear-gradient(135deg, #000000, #433dfa);
     transition: .3s;
 }
 
@@ -41,7 +41,7 @@ header nav a:hover {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background: linear-gradient(135deg, #000000, #433dfa);
     text-align: center;
     color: white;
 }
@@ -62,7 +62,7 @@ header nav a:hover {
     font-weight: bold;
     background-color: #f1f1f1;
     border: none;
-    color: #7873f5;
+    color: #433dfa;
     cursor: pointer;
     border-radius: 50px;
     transition: background-color 0.3s;
@@ -70,13 +70,13 @@ header nav a:hover {
 
 .hero button:hover {
     color: white;
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background: linear-gradient(135deg, #000000, #433dfa);
     font-size: 24px;
     font-weight: bold;
     transition: .3s;
 }
 .contactpage {
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background: linear-gradient(135deg, #000000, #433dfa);
     position: fixed;
     top: 0px;
     bottom: 0px;
@@ -102,7 +102,7 @@ header nav a:hover {
     display: flex;
     justify-content: space-around;
     padding: 50px 20px;
-    background: linear-gradient(135deg, whitesmoke, #7873f5);
+    background: linear-gradient(135deg, black, #433dfa);
 }
 
 .feature {
@@ -111,12 +111,12 @@ header nav a:hover {
     padding: 20px;
     border: 1px solid #272727;
     border-radius: 10px;
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background: linear-gradient(135deg, #000000, #433dfa);
 }
 
 .feature:hover {
     font-size: 18px;
-    border: 2px solid #ff6ec4;
+    border: 2px solid #000000;
     transition: .3s;
 }
 
@@ -133,7 +133,7 @@ header nav a:hover {
 .container {
     height: 750px;
     color: white;
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background: linear-gradient(135deg, #000000, #433dfa);
     text-align: center;
     padding: 50px;
 }
@@ -156,7 +156,7 @@ label {
     padding: 8px;
 }
 label:hover {
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background: linear-gradient(135deg, #000000, #433dfa);
     border-radius: 8px;
 }
 label:active {
@@ -170,7 +170,7 @@ label:active {
     padding: 10px;
     border: 1px solid #272727;
     border-radius: 5px;
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background: linear-gradient(135deg, #000000, #433dfa);
     color: white;
     box-sizing: border-box;
 }
@@ -182,7 +182,7 @@ label:active {
     transition: .25s;
 }
 .login-form button {
-    border: 5px solid #7873f5;
+    border: 5px solid #433dfa;
     color: #121212;
     padding: 10px;
     border: none;
@@ -194,12 +194,12 @@ label:active {
 
 .login-form button:hover {
     font-size: 16px;
-    background-color: #ff6ec4;
+    background-color: #000000;
     transition: .3s;
 }
 
 .dashboard {
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background: linear-gradient(135deg, #000000, #433dfa);
     color: white;
     text-align: center;
     padding: 50px;
@@ -211,23 +211,23 @@ label:active {
     display: inline-block;
     text-align: left;
     padding: 20px;
-    border: 1px solid #ff6ec4;
+    border: 1px solid #000000;
     border-radius: 10px;
     background: white;
 }
 .attendance:hover {
-    border:2px solid #7873f5;
+    border:2px solid #433dfa;
     transition: padding 1s;
 }
 
 .punch-button {
-    background: #7873f5;
+    background: #433dfa;
     color: white;
     border-radius: 8px;
     padding: 10px;
 }
 .punch-button:hover {
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background: linear-gradient(135deg, #000000, #433dfa);
     transition: 1s;
 }
 .punch-button:active {
@@ -264,26 +264,26 @@ label:active {
     display: flex;
 }
 #studentMessage {
-    border: 1px solid #7873f5;
+    border: 1px solid #433dfa;
     border-radius: 8px;
 }
 #studentMessage:hover {
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
-    border: 5px solid #ff6ec4;
+    background: linear-gradient(135deg, #000000, #433dfa);
+    border: 5px solid #000000;
     transition: .3s;
 }
 .send-button {
-    border: px solid #7873f5;
+    border: px solid #433dfa;
     border-radius: 8px;
 }
 .send-button:hover {
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
-    border: 5px solid #ff6ec4;
+    background: linear-gradient(135deg, #000000, #433dfa);
+    border: 5px solid #000000;
     color: white;
     transition: .3s;
 }
 .maintdash {
-    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    background: linear-gradient(135deg, #000000, #433dfa);
     position: absolute;
     top: 0px;
     bottom: 0px;
@@ -332,4 +332,7 @@ body, html {
 }
 .option {
     color: #1f1f1f;
+}
+footer {
+    background: linear-gradient(135deg, #000000, #433dfa);
 }

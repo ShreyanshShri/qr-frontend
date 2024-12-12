@@ -19,15 +19,15 @@ const Loginpage = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const res = await axios.post("https://qr-backend-b3pj.onrender.com/auth/login", {
+            const res = await axios.post(import.meta.env.VITE_SERVER_URL+"auth/login", {
                 college_id,
                 password
             });
             localStorage.setItem("token", res.data.token);
             setRedirect(true);
         } catch (err) {
-            console.log(err);
-            alert("Invalid UserID password combination");
+            console.log(err.response.data);
+            alert(err.response.data.message);
         }
     }
 

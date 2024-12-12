@@ -1,29 +1,54 @@
 import React, {useState, useEffect, useRef} from 'react'
 import axios from "axios"
 import { socket } from '../socket';
-import QRCode from "react-qr-code";
-import { DownloadTableExcel } from 'react-export-table-to-excel'
 
-import StudentTr from '../components/StudentTr';
+import QRSection from '../components/QRSection';
+import ClassesBlock from '../components/ClassesBlock';
+import Statistics from '../components/Statistics';
+import AttendanceTable from '../components/AttendanceTable';
 
 const Teacherdashboard = () => {
     
-    const [teacher, setTeacher] = useState<any>(null);
-    const [currBatch, setCurrBatch] = useState("")
     const [token, setToken] = useState("");
+    const [teacher, setTeacher] = useState<any>(null);
     const [students, setStudents] = useState<any>([]);
     const [attendance, setAttendance] = useState<any>([]);
+    const [currBatch, setCurrBatch] = useState("")
+    const [currentBatchAttendanceList, setCurrentBatchAttendanceList] = useState([]);
+    const [todaysAttList, setTodaysAttList] = useState<string[]>([]);
+    const [classAnalyticsData, setClassAnalyticsData] = useState<any>([]);
     const [showQR, setShowQR] = useState(false);
     const [timer, setTimer] = useState(0);
-    const [classAnalyticsData, setClassAnalyticsData] = useState<any>([]);
+    
+    const timerId = useRef<any>(null);
+    
+    // get attendance data
+    const getData = async () => {
+        try {
+            const res = await axios.post(import.meta.env.VITE_SERVER_URL+"attendance/get", {
+                token: localStorage.getItem("token")
+            })
+            setTeacher(res.data.user);
+            setStudents(res.data.student_list);
+            setCurrBatch(res.data.user.batches[0]);
+            setAttendance(res.data.attendance_data);
+            updateGraph(res.data.attendance_data, res.data.user.batches[0]);
+            startConnection(res.data.user.batches[0], res.data.user.subjects[0]);
+            
+        } catch (err) {
+            alert(err.response.data.message)
+            console.log(err.response.data);
+        }
+    }
 
+    // plot attendance data
     const updateGraph = (attendance_data, batch) => {
         const temp : any= []
         attendance_data.map(at => {
-
+            
             let s = new Set(at.students);
             const a1 = [...s];
-
+            
             const yymmdd = at.date.split("T")[0];
             const month = yymmdd.split("-")[1];
             const date = yymmdd.split("-")[2];
@@ -33,61 +58,77 @@ const Teacherdashboard = () => {
         })
         setClassAnalyticsData(temp)
     }
-
-    const timerId = useRef<any>(null);
-    const tableRef = useRef<any>(null);
     
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                const res = await axios.post("https://qr-backend-b3pj.onrender.com/attendance/get", {
-                    token: localStorage.getItem("token")
-                })
-                setTeacher(res.data.user);
-                setStudents(res.data.student_list);
-                setCurrBatch(res.data.user.batches[0]);
-                setAttendance(res.data.attendance_data);
-                updateGraph(res.data.attendance_data, res.data.user.batches[0]);
-                startConnection(res.data.user.batches[0], res.data.user.subjects[0]);
-                // console.log(res)
-            } catch (err) {
-                alert(err.message)
-                console.log(err.message);
+    // start session
+    const startConnection = async (__batch, __subject) => {
+        socket.emit("start-session", { 
+            _batch: __batch,
+            _subject: __subject
+         })
+    }
+    // leave room
+    const leaveRoom = async () => {
+        socket.emit("leave");
+    }
+
+
+    const saveAttendance = async () => {
+        let currBatchStudents :any[] = [];
+        students.map(st => {
+            if(st.batches[0] == currBatch) currBatchStudents.push(st);
+        })
+
+        let list :any = []
+        todaysAttList.map((att, index) => {
+            if(att == "P" || att == "p") {
+                list.push(currBatchStudents[index].college_id)
             }
+        })
+
+        const attendance_data = {
+            subject: teacher.subjects[0],
+            batch: currBatch,
+            teacher: teacher.college_id,
+            students: list
         }
+        console.log(attendance_data)
+
+        try {
+            const res = await axios.post(import.meta.env.VITE_SERVER_URL+"attendance/save-attendance", {
+                user_token: localStorage.getItem("token"),
+                attendance_data
+            })
+            alert(res.data.message);
+        } catch (err) {
+            alert(err.response.data.message)
+            console.log(err.response.data);
+        }
+    }
+
+    useEffect(() => {
         getData();
         
+        // QR Logic
+        function onToken(_token) {
+            // console.log(_token);
+            if(_token.timer) setTimer(_token.timer);
+            setToken(_token.token);
+        }
         
+        socket.on('connect', () => console.log("connection established"));
+        socket.on('disconnect', () => console.log("connection ended"));
+        socket.on('token', onToken);
+        
+        // QR Timer Logic
         timerId.current = setTimeout(() => {
             setShowQR(true);
         }, 2000);
 
-
-
-
-        function onConnect() {
-            console.log("connection established");
-        }
-    
-        function onDisconnect() {
-            console.log("connection ended");
-        }
-
-        function onToken(_token) {
-            console.log(_token);
-            if(_token.timer) setTimer(_token.timer);
-            setToken(_token.token);
-        }
-
-        socket.on('connect', onConnect);
-        socket.on('disconnect', onDisconnect);
-        socket.on('token', onToken);
-
         return () => {
             clearTimeout(timerId.current);
 
-            socket.off('connect', onConnect);
-            socket.off('disconnect', onDisconnect);
+            socket.off('connect', () => console.log("connection established"));
+            socket.off('disconnect', () => console.log("connection ended"));
             socket.off('token', onToken);
             // socket.off('start-session');
         };
@@ -110,85 +151,54 @@ const Teacherdashboard = () => {
             clearInterval(interval);
         }
     }, [showQR])
-    
 
-    const startConnection = async (__batch, __subject) => {
-        socket.emit("start-session", { 
-            _batch: __batch,
-            _subject: __subject
-         })
-    }
+    useEffect(() => {
+        let list: any = [];
+            attendance.map(att => {
+            if(att.batch == currBatch) {
+                list.push(att);
+            }
+            })
+            setCurrentBatchAttendanceList(list)
 
-    const leaveRoom = async () => {
-        socket.emit("leave");
-    }
+        let temp: string[] = [];
+        students.map(st => {
+            if(st.batches[0] != currBatch) return
+            if(list[list.length - 1].students.find(s => s === st.college_id)){
+                temp.push("P")
+            } else {
+                temp.push("A")
+            }
+        })
+        setTodaysAttList(temp);
+        // console.log(temp)
+
+    }, [attendance, currBatch])
 
 
 
   return (
     <div className="dashboard-container">
-    <h1 id="teacher-name">Welcome, <span id="userDisplay">{teacher && teacher.username}</span></h1>
-    <h2>{teacher && teacher.subjects[0]}</h2>
-    {token != "" && showQR && <QRCode value={token} />}
-    {showQR && <p>Valid For: {timer}s</p>}
+    
+    <QRSection teacher={teacher} token={token} showQR={showQR} timer={timer} />
+    
     <div className="details">
-        <div className="classes-block">
-            <h2>Classes</h2>
-            <ul id="classes-list">
-                {teacher && teacher.batches.map(b => (
-                    <li key={b} className={currBatch == b ? "active" : "inactive"}><button onClick={() => {
-                        setCurrBatch(b)
-                        leaveRoom()
-                        startConnection(b, teacher.subjects[0])
-                        updateGraph(attendance, b);
-                    }} className='button-none' 
-                    >{b}</button></li>
-                ))}
-            </ul> 
-        </div>
-        <div className="attendance-block">
-            <h2>Student Attendance</h2>
-            
-            <DownloadTableExcel
-                    filename="attendance table"
-                    sheet={currBatch}
-                    currentTableRef={tableRef.current}
-                >
+    
+        <ClassesBlock teacher={teacher} currBatch={currBatch} setCurrBatch={setCurrBatch} leaveRoom={leaveRoom} startConnection={startConnection} updateGraph={updateGraph} attendance={attendance} />
+        <AttendanceTable 
+            currBatch={currBatch} 
+            attendance={attendance} 
+            currentBatchAttendanceList={currentBatchAttendanceList} 
+            students={students} 
+            todaysAttList={todaysAttList} 
+            setTodaysAttList={setTodaysAttList} 
+            saveAttendance={saveAttendance}    
+        />
 
-                   <button> Export excel </button>
-            </DownloadTableExcel>
-
-            <table id="attendance-table" ref={tableRef}>
-                <thead>
-                    <tr>
-                        <th>Student Name</th>
-                        {/* <th colSpan={attendance.length}>Date</th> */}
-                        {attendance.map(at => {
-                            const yymmdd = at.date.split("T")[0];
-                            const month = yymmdd.split("-")[1];
-                            const date = yymmdd.split("-")[2];
-                            if(at.batch !== currBatch) return;
-                            return <th key={at._id}>{date}/{month}</th>
-                        })}
-                    </tr>
-                </thead>
-                <tbody>
-                    {students.map(st => {
-                        if(st.batches[0] == currBatch) {
-                            return (
-                                <StudentTr key={st.college_id} 
-                                    student={st}
-                                    attendance={attendance} 
-                                    currBatch={currBatch}
-                                    />
-                            )
-
-                        }
-                    })}
-                </tbody>
-            </table>
-        </div>
     </div>
+
+    <Statistics classAnalyticsData={classAnalyticsData} />
+    
 </div>
   )
 }
