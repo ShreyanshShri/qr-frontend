@@ -15,7 +15,7 @@ const Statistics = ({classAnalyticsData}) => {
     }}>
     <ResponsiveContainer width="100%" height="100%">
         <BarChart data={classAnalyticsData}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="1 1" />
             <XAxis dataKey="date" />
             <YAxis dataKey="attendance" />
             <Tooltip />

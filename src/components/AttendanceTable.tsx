@@ -24,10 +24,12 @@ const AttendanceTable = ({currBatch, attendance, students, currentBatchAttendanc
                    <button> Export excel </button>
             </DownloadTableExcel>
 
+            <div className="table-wrapper">
             <table id="attendance-table" ref={tableRef}>
                 <thead>
                     <tr>
-                        <th>Student Name</th>
+                        <th className='col-1'>Total</th>
+                        <th className='col-2'>Student Name</th>
                         {attendance.map(at => {
                             const yymmdd = at.date.split("T")[0];
                             const month = yymmdd.split("-")[1];
@@ -54,6 +56,7 @@ const AttendanceTable = ({currBatch, attendance, students, currentBatchAttendanc
                     })}
                 </tbody>
             </table>
+            </div>
             <button onClick={saveAttendance}>Save Attendance</button>
         </div>
   )

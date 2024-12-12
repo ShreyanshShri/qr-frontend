@@ -46,9 +46,15 @@ const Teacherdashboard = () => {
         const temp : any= []
         attendance_data.map(at => {
             
-            let s = new Set(at.students);
-            const a1 = [...s];
-            
+            let a1 : any = [];
+
+            at.students.map(st => {
+                if(st == null || st == undefined) return;
+                if(st.split("")[0] == "4") return;
+                if(a1.find(x => x === st)) return;
+                a1.push(st);
+            })
+
             const yymmdd = at.date.split("T")[0];
             const month = yymmdd.split("-")[1];
             const date = yymmdd.split("-")[2];
@@ -110,7 +116,7 @@ const Teacherdashboard = () => {
         
         // QR Logic
         function onToken(_token) {
-            // console.log(_token);
+            console.log(_token);
             if(_token.timer) setTimer(_token.timer);
             setToken(_token.token);
         }

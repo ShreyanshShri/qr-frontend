@@ -14,11 +14,13 @@ const Studentdashboard = () => {
         getData();
 
         function onScanSuccess(decodedText, decodedResult) {
+            console.log(decodedText);
             punchAttendance(decodedText)
           }
           
           function onScanFailure(error) {
-            // console.warn(`Code scan error = ${error}`);
+            alert("Error: " + error)
+            console.log(`Code scan error = ${error}`);
           }
           
           let html5QrcodeScanner = new Html5QrcodeScanner(

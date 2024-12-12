@@ -2,9 +2,17 @@ import React, { useEffect, useState } from 'react'
 
 const StudentTr = ({student, currentBatchAttendanceList, setTodaysAttList, todaysAttList, index}) => {
   
+  const [daysPresent, setDaysPresent] = useState<number>(0);
+
   useEffect(() => {
-    // console.log(todaysAttList)
-  }, [todaysAttList])
+    let counter = 0;
+    currentBatchAttendanceList.map((att, i) => {
+      if(att.students.find(id => id == student.college_id)) {
+          counter++;
+      }
+    })
+    setDaysPresent(counter);
+  }, [currentBatchAttendanceList])
 
 
 
@@ -37,12 +45,15 @@ const StudentTr = ({student, currentBatchAttendanceList, setTodaysAttList, today
 
   return (
     <tr>
-        <th>{student.username}</th>
+        <th className={daysPresent/currentBatchAttendanceList.length <= 0.50 ? "col-1 red"
+           : daysPresent/currentBatchAttendanceList.length <= 0.75 ? "col-1 yellow"
+           : "col-1 green"}>{daysPresent}/{currentBatchAttendanceList.length}</th>
+        <th className='col-2'>{student.username}</th>
         {currentBatchAttendanceList.map((att, i) => {
             if(att.students.find(id => id == student.college_id)) {
-                return (<th key={att._id}>{i === currentBatchAttendanceList.length - 1 ? <input style={{width: "20px", border: "none"}} type="text" value={todaysAttList[index]} onChange={(e) => handleChange(e)} /> : <span>P</span>}</th>)
+                return (<td key={att._id}>{i === currentBatchAttendanceList.length - 1 ? <input style={{width: "20px", border: "none"}} type="text" value={todaysAttList[index]} onChange={(e) => handleChange(e)} /> : <span>P</span>}</td>)
             } else {
-                return (<th key={att._id}>{i === currentBatchAttendanceList.length - 1 ? <input style={{width: "20px", border: "none"}} type="text" value={todaysAttList[index]} onChange={(e) => handleChange(e)} /> : <span>A</span>}</th>)
+                return (<td key={att._id}>{i === currentBatchAttendanceList.length - 1 ? <input style={{width: "20px", border: "none"}} type="text" value={todaysAttList[index]} onChange={(e) => handleChange(e)} /> : <span>A</span>}</td>)
             }
         })}
     </tr>
