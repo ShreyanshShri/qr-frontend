@@ -137,3 +137,11 @@ thead {
         align-items: center;
     }
   }
+
+
+  .qr-wrapper {
+    padding: 20px;
+    background: white;
+    width: fit-content; 
+    margin: auto;
+  }

@@ -3,23 +3,25 @@ import axios from "axios";
 import {Html5QrcodeScanner} from "html5-qrcode"
 
 import "../css/student-dashboard.css"
-import Attendance from '../../../server/models/Attendance';
 
 const Studentdashboard = () => {
     const [student, setStudent] = useState<any>(null);
     const [subject, setSubject] = useState("");
     const [attendences, setAttendances] = useState<any>([]);
+    const [decodedText, setDecodedText] = useState<any>("");
 
     useEffect(() => {
         getData();
 
-        function onScanSuccess(decodedText, decodedResult) {
-            console.log(decodedText);
-            punchAttendance(decodedText)
+        function onScanSuccess(_decodedText, decodedResult) {
+            console.log(_decodedText);
+            if(decodedText == _decodedText) return;
+            setDecodedText(_decodedText);
+            punchAttendance(_decodedText);
           }
           
           function onScanFailure(error) {
-            alert("Error: " + error)
+            // alert("Error: " + error)
             console.log(`Code scan error = ${error}`);
           }
           

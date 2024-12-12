@@ -6,7 +6,9 @@ const QRSection = ({teacher, token, showQR, timer}) => {
     <div>
         <h1 id="teacher-name">Welcome, <span id="userDisplay">{teacher && teacher.username}</span></h1>
     <h2>{teacher && teacher.subjects[0]}</h2>
-    {token != "" && showQR && <QRCode value={token} />}
+    <div className="qr-wrapper">
+      {token != "" && showQR && <QRCode value={token} />}
+    </div>
     {showQR && <p>Valid For: {timer}s</p>}
     </div>
   )
