@@ -17,6 +17,11 @@ const Teacherdashboard = () => {
     const [currentBatchAttendanceList, setCurrentBatchAttendanceList] = useState([]);
     const [todaysAttList, setTodaysAttList] = useState<string[]>([]);
     const [classAnalyticsData, setClassAnalyticsData] = useState<any>([]);
+    const [rygStudentData, setRygStudentData] = useState([
+        {name: "red", value: 0, fill: "red"},
+        {name: "yellow", value: 0, fill: "#f2ae00"},
+        {name: "green", value: 0, fill: "#58d612"},
+    ]);
     const [showQR, setShowQR] = useState(false);
     const [timer, setTimer] = useState(0);
     
@@ -179,13 +184,41 @@ const Teacherdashboard = () => {
         setTodaysAttList(temp);
         // console.log(temp)
 
+        let greenStudents = 0;
+        let redStudents = 0; 
+        let yellowStudents = 0;
+        students.map(st => {
+            let x = 0;
+            if(st.batches[0] != currBatch) return;
+            list.map(l => {
+                if(l.students.find(s => s === st.college_id)) x++;
+            })
+            const percentage = x/list.length;
+            if(percentage >= 0.75) {
+                greenStudents++;
+            } else if(percentage >= 0.50) {
+                yellowStudents++;
+            } else {
+                redStudents++;
+            }
+        })
+        setRygStudentData([
+            {name: "red", value: redStudents, fill: "red"},
+            {name: "yellow", value: yellowStudents, fill: "#f2ae00"},
+            {name: "green", value: greenStudents, fill: "#58d612"},
+        ]);
+        
+
     }, [attendance, currBatch])
 
 
 
   return (
+    <>
+    <div className="navbarBox login-navbar">
+        <div className="logoBox" style={{fontSize: "36px"}}>MyAttendance</div>
+    </div>
     <div className="dashboard-container">
-    
     <QRSection teacher={teacher} token={token} showQR={showQR} timer={timer} />
     
     <div className="details">
@@ -203,9 +236,10 @@ const Teacherdashboard = () => {
 
     </div>
 
-    <Statistics classAnalyticsData={classAnalyticsData} />
+    <Statistics classAnalyticsData={classAnalyticsData} rygStudentData={rygStudentData} />
     
 </div>
+</>
   )
 }
 

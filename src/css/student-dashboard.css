@@ -3,10 +3,15 @@ body, html {
     height: 100%;
     margin: 0;
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #000000, #433dfa);
+    /* background: linear-gradient(135deg, #000000, #433dfa); */
+    background-color: #F4F4F4;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    color: white;
+    color: black;
+}
+
+h2 {
+    margin: 20px 20px;
 }
   
 * {
@@ -27,7 +32,7 @@ body, html {
 .details {
     display: flex;
     max-width: 90vw;
-    margin-top: 20px;
+    margin-top: 8vh;
     color: black;
 }
 
@@ -36,6 +41,8 @@ body, html {
     background-color: rgba(0,0,0,0.1);
     color: white;
     padding: 0px 20px;
+    border-radius: 12px 0px 0px 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 .attendance-block {
@@ -43,8 +50,8 @@ body, html {
     background: white;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    border: 1px solid #000000;
-    border-radius: 10px;
+    border: none;
+    border-radius: 0px 12px 12px 0px;
 }
 
 h2 {
@@ -52,8 +59,9 @@ h2 {
 }
  
 ul {
-    list-style-type: none;
+    /* list-style-type: none; */
     padding: 0;
+    margin-left: 20px;
 }
 
 li {
@@ -145,3 +153,10 @@ thead {
     width: fit-content; 
     margin: auto;
   }
+
+.QRBox {
+    background: #693EFF;
+    color: white;
+    padding: 10px 0px;
+    border-radius: 12px;
+}

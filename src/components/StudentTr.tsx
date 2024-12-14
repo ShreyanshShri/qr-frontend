@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 const StudentTr = ({student, currentBatchAttendanceList, setTodaysAttList, todaysAttList, index}) => {
   
@@ -18,10 +18,12 @@ const StudentTr = ({student, currentBatchAttendanceList, setTodaysAttList, today
 
   // const [elRefs, setElRefs] = useState([]);
   
+  const itemEls = useRef<any[]>([]);
+
   // useEffect(() => {
   //   // add or remove refs
   //   setElRefs((elRefs) =>
-  //     Array(currentBatchAttendanceList.length)
+  //     Array(todaysAttList.length)
   //       .fill()
   //       .map((_, i) => elRefs[i] || useRef()),
   //   );
@@ -40,6 +42,9 @@ const StudentTr = ({student, currentBatchAttendanceList, setTodaysAttList, today
       temp[index] = "P"
       setTodaysAttList(temp)
     }
+    // console.log(itemEls)
+    // if(index == 9) return itemEls.current[0].focus();
+    // itemEls.current[index+1].focus();
   }
 
 
@@ -51,9 +56,9 @@ const StudentTr = ({student, currentBatchAttendanceList, setTodaysAttList, today
         <th className='col-2'>{student.username}</th>
         {currentBatchAttendanceList.map((att, i) => {
             if(att.students.find(id => id == student.college_id)) {
-                return (<td key={att._id}>{i === currentBatchAttendanceList.length - 1 ? <input style={{width: "20px", border: "none"}} type="text" value={todaysAttList[index]} onChange={(e) => handleChange(e)} /> : <span>P</span>}</td>)
+                return (<td key={att._id}>{i === currentBatchAttendanceList.length - 1 ? <input style={{width: "20px", border: "none"}} type="text" value={todaysAttList[index]} onChange={(e) => handleChange(e)} ref={(element) => itemEls.current.push(element)} /> : <span>P</span>}</td>)
             } else {
-                return (<td key={att._id}>{i === currentBatchAttendanceList.length - 1 ? <input style={{width: "20px", border: "none"}} type="text" value={todaysAttList[index]} onChange={(e) => handleChange(e)} /> : <span>A</span>}</td>)
+                return (<td key={att._id}>{i === currentBatchAttendanceList.length - 1 ? <input style={{width: "20px", border: "none"}} type="text" value={todaysAttList[index]} onChange={(e) => handleChange(e)} ref={(element) => itemEls.current.push(element)} /> : <span>A</span>}</td>)
             }
         })}
     </tr>
